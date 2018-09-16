@@ -6,7 +6,7 @@ import (
 	"engo.io/engo/common"
 )
 
-type Tile struct {
+type LevelTile struct {
 	ecs.BasicEntity
 	common.RenderComponent
 	common.SpaceComponent
@@ -26,12 +26,12 @@ func LoadTilemap(tileURL string, world *ecs.World) engo.AABB {
 	return levelData.Bounds()
 }
 
-func createTiles(levelData *common.Level) (tiles []*Tile) {
-	tiles = make([]*Tile, 0)
+func createTiles(levelData *common.Level) (tiles []*LevelTile) {
+	tiles = make([]*LevelTile, 0)
 	for _, tileLayer := range levelData.TileLayers {
 		for _, tileElement := range tileLayer.Tiles {
 			if tileElement.Image != nil {
-				tile := &Tile{BasicEntity: ecs.NewBasic()}
+				tile := &LevelTile{BasicEntity: ecs.NewBasic()}
 				tile.RenderComponent = common.RenderComponent{
 					Drawable: tileElement,
 					Scale:    engo.Point{1, 1},
@@ -48,7 +48,7 @@ func createTiles(levelData *common.Level) (tiles []*Tile) {
 	return
 }
 
-func addToRenderSystem(tiles []*Tile, world *ecs.World) {
+func addToRenderSystem(tiles []*LevelTile, world *ecs.World) {
 	// add the tiles to the RenderSystem
 	for _, system := range world.Systems() {
 		switch sys := system.(type) {

@@ -4,10 +4,14 @@ import (
 	"engo.io/ecs"
 	"engo.io/engo"
 	"engo.io/engo/common"
-	"math/rand"
 )
 
 var CitySpritesheet *common.Spritesheet
+
+func LoadSpritesheet() {
+	CitySpritesheet = common.NewSpritesheetWithBorderFromFile("textures/citySheet.png", 16, 16, 1, 1)
+
+}
 
 type City struct {
 	ecs.BasicEntity
@@ -15,13 +19,12 @@ type City struct {
 	common.SpaceComponent
 }
 
-func NewCity(x, y, i, j int) *City {
+func NewCity(x, y, i, j, randIdx int) *City {
 	city := &City{BasicEntity: ecs.NewBasic()}
 	city.SpaceComponent.Position = engo.Point{
 		X: float32(((x+1)*64)+8) + float32(i*16),
 		Y: float32((y+1)*64) + float32(j*16),
 	}
-	randIdx := rand.Intn(len(CitySpriteMap))
 	city.RenderComponent.Drawable = CitySpritesheet.Cell(CitySpriteMap[randIdx][i+3*j])
 	city.RenderComponent.SetZIndex(1)
 

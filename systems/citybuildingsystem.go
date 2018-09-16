@@ -2,6 +2,7 @@ package systems
 
 import (
 	"engo.io/ecs"
+	"engo.io/engo"
 	"engo.io/engo/common"
 	"errors"
 	"github.com/MrTrustworthy/gaeome/entities"
@@ -46,7 +47,7 @@ func (cbs *CityBuildingSystem) New(world *ecs.World) {
 
 		}
 	}
-	entities.CitySpritesheet = common.NewSpritesheetWithBorderFromFile("textures/citySheet.png", 16, 16, 1, 1)
+	entities.LoadSpritesheet()
 	rand.Seed(time.Now().UnixNano())
 
 }
@@ -57,16 +58,28 @@ func (cbs *CityBuildingSystem) generateCity() {
 	if err != nil {
 		return
 	}
+	randIdx := rand.Intn(len(entities.CitySpriteMap))
 
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 4; j++ {
-			city := entities.NewCity(x, y, i, j)
-			cbs.LoadInto(city)
+			city := entities.NewCity(x, y, i, j, randIdx)
+			cbs.LoadIntoWorld(city)
 		}
 	}
+
+	engo.Mailbox.Dispatch(HUDTextMessage{
+		BasicEntity: ecs.NewBasic(),
+		SpaceComponent: common.SpaceComponent{
+			Position: engo.Point{X: float32((x + 1) * 64), Y: float32((y + 1) * 64)},
+			Width:    64,
+			Height:   64,
+		},
+		MouseComponent: common.MouseComponent{},
+		Line:           "Town, just built, generates $100 per day",
+	})
 }
 
-func (cbs *CityBuildingSystem) LoadInto(city *entities.City) {
+func (cbs *CityBuildingSystem) LoadIntoWorld(city *entities.City) {
 	for _, system := range cbs.world.Systems() {
 		switch sys := system.(type) {
 		case *common.RenderSystem:
