@@ -5,13 +5,17 @@ import (
 	"math"
 )
 
+type Abser interface {
+	Abs() float64
+	Zero()
+}
 
 type Point struct {
 	X float64
 	Y float64
 }
 
-func (p Point) Abs() float64 {
+func (p *Point) Abs() float64 {
 	return math.Sqrt(math.Pow(p.X, 2) + math.Pow(p.Y, 2))
 }
 
@@ -20,18 +24,35 @@ func (p *Point) Zero() {
 	p.Y = 0
 }
 
-func One(p *Point){
-	p.X = 1
-	p.Y = 1
+func main() {
+	myobj := Point{4.2, 3.0}
+	myobj2 := Point{2.2, 4.0}
+	myobjSlice := make([]*Point, 0)
+	myobjSlice = append(myobjSlice, &myobj, &myobj2)
+
+	intermediate := Abser(&myobj)
+	printOneAbs(&intermediate)
+
+	myObjInterfaceSlice := make([]*Abser, len(myobjSlice))
+	for i, obj := range myobjSlice {
+		intermediate := Abser(obj)
+		myObjInterfaceSlice[i] = &intermediate
+	}
+
+	printAllAbs(myObjInterfaceSlice)
+	printAllAbs(myObjInterfaceSlice)
+
 }
 
-func main(){
-	myobj := Point{4.2, 3.0}
-	fmt.Println(myobj)
-	fmt.Println("Abs:", myobj.Abs())
+func printAllAbs(absables []*Abser) {
+	fmt.Println("All abs:")
+	for _, absable := range absables {
+		fmt.Println("Abs:", (*absable).Abs())
+		(*absable).Zero()
+	}
+}
 
-	myobj2 := Point{4.2, 3.0}
-	fmt.Println(myobj2)
-	One(&myobj2)
-	fmt.Println("Zeroes:", myobj2.Abs())
+func printOneAbs(absable *Abser) {
+	fmt.Println("One Abs:")
+	fmt.Println("Abs:", (*absable).Abs())
 }

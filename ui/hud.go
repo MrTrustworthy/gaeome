@@ -32,7 +32,7 @@ func NewHUD() (hud HUD) {
 		Scale:    engo.Point{1, 1},
 	}
 	renderComponent.SetShader(common.HUDShader)
-	renderComponent.SetZIndex(1)
+	renderComponent.SetZIndex(2)
 
 	hud = HUD{
 		BasicEntity:     ecs.NewBasic(),
