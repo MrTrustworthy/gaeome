@@ -30,13 +30,11 @@ func main() {
 	myobjSlice := make([]*Point, 0)
 	myobjSlice = append(myobjSlice, &myobj, &myobj2)
 
-	intermediate := Abser(&myobj)
-	printOneAbs(&intermediate)
+	printOneAbs(&myobj)
 
-	myObjInterfaceSlice := make([]*Abser, len(myobjSlice))
+	myObjInterfaceSlice := make([]Abser, len(myobjSlice))
 	for i, obj := range myobjSlice {
-		intermediate := Abser(obj)
-		myObjInterfaceSlice[i] = &intermediate
+		myObjInterfaceSlice[i] = Abser(obj)
 	}
 
 	printAllAbs(myObjInterfaceSlice)
@@ -44,15 +42,15 @@ func main() {
 
 }
 
-func printAllAbs(absables []*Abser) {
+func printAllAbs(absables []Abser) {
 	fmt.Println("All abs:")
 	for _, absable := range absables {
-		fmt.Println("Abs:", (*absable).Abs())
-		(*absable).Zero()
+		fmt.Println("Abs:", absable.Abs())
+		absable.Zero()
 	}
 }
 
-func printOneAbs(absable *Abser) {
+func printOneAbs(absable Abser) {
 	fmt.Println("One Abs:")
-	fmt.Println("Abs:", (*absable).Abs())
+	fmt.Println("Abs:", absable.Abs())
 }
